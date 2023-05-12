@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Assignment Task 1",
+  "description": "The scheam for university of northmapton course data objects",
+  "type": "object",
+  "properties": {
+    "courses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "Title": { "type": "string" },
+          "Overview": { "type": "string" },
+          "Highlights": { "type": "string" },
+          "Contents": {
+            "type": "object",
+            "properties": {
+              "course_details": { "type": "string" },
+              "module_list": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "Entry_Requirements": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "fees_and_funding": {
+            "type": "object",
+            "properties": {
+              "UK_Full_Time": { "type": "string" },
+              "UK_Part_Time": { "type": "string" },
+              "International_Full_Time": { "type": "string" },
+              "International": { "type": "string" }
+            }
+          },
+          "FAQs": { "type": "string" }
+        }
+      }
+    }
+  }
+}
