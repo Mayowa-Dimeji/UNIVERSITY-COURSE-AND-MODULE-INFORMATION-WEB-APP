@@ -1,6 +1,7 @@
-//declare course data
+//declare course variable
 let courses = [];
 
+//on document ready call update table function
 $(document).ready(function () {
   updateTable();
 });
@@ -12,10 +13,11 @@ function updateTable() {
       type: "GET",
       dataType: "json",
       success: function (response) {
-        courses = response.courses;
+        courses = response.courses; // store course data response
         let txt = "";
-        $("#body").html("");
+        $("#tbody").html(""); //clear table body
         $.each(courses, function (index) {
+          //iterate courses array and format icons and title
           txt +=
             "<tr><td>" +
             '<img class="icon" alt="Icon" src="' +
@@ -24,19 +26,20 @@ function updateTable() {
             courses[index].Title +
             "</td></tr>";
         });
-        $("#body").append(txt);
+        $("#tbody").append(txt); //append formated values to table body
 
-        // begining of click event listener to display overlay
-        $(document).on("click", "#body tr", function () {
+        // begining of table row click event listener to display overlay for more course information
+        $(document).on("click", "#tbody tr", function () {
+          //for table body rows
           console.log("Click event listener set up.");
           document.getElementById("overlay").style.display = "none";
 
           // Get the index of the clicked row
           var index = $(this).index();
-          //store fee list
+          //for the fees values in GBP
           const gbpList = [];
 
-          // Set the content to display in the overlay
+          // To format the content to display in the overlay gotten from from course with index
           var icon =
             '<img class="icon" alt="Icon" src="' +
             courses[index].iconPath +
@@ -84,7 +87,7 @@ function updateTable() {
           // get the overlay element
           var overlay = document.getElementById("overlay");
 
-          //get divs from html and input set contents to the html
+          //get divs from html and input formatted contents into the html
           var iconDiv = document.getElementById("iconOverlay");
           iconDiv.innerHTML = icon;
 
@@ -115,12 +118,11 @@ function updateTable() {
           // Add the overlay to the body
           console.log("Overlay appended to the body.");
 
-          overlay.style.display = "flex";
-          overlay.classList.add("show");
-          overlay.querySelector("#content").classList.add("scroll");
+          overlay.style.display = "flex"; //show overlay
+          overlay.querySelector("#content").classList.add("scroll"); // add class css styling to fit into the overlay and display properly
           console.log("Overlay appended to the body.");
 
-          // click event listener to close button to hide it
+          // click event listener to close button to hide overlay
           document
             .getElementById("closeBtn")
             .addEventListener("click", function () {
@@ -133,26 +135,26 @@ function updateTable() {
 
           // Add an event listener to the select element
           currencySelect.addEventListener("change", () => {
-            const priceElements = document.querySelectorAll(".fees");
+            const priceElements = document.querySelectorAll(".fees"); //collect fees on the column
             // Get the selected option value
             const selectedCurrency = currencySelect.value;
-            var clean = cleanList(gbpList);
-            // Do something based on the selected option value
+            var clean = cleanList(gbpList); //clean list to float numbers
+
             if (selectedCurrency === "gbp") {
-              // Call a function to convert from GBP to USD
+              // append fees in Gbp
               gbpList;
               priceElements.forEach((el, index) => {
                 el.textContent = gbpList[index];
               });
             } else if (selectedCurrency === "usd") {
-              // Call a function to convert from USD to GBP
+              // Call the function to convert and display fees in USD
 
               var list = formatList(gbpToUsd(clean), "$");
               priceElements.forEach((el, index) => {
                 el.textContent = list[index];
               });
             } else if (selectedCurrency === "eur") {
-              // Call a function to convert from EUR to GBP
+              // Call the function to convert and display fees in EUR
 
               var list = formatList(gbpToEur(clean), "€");
               priceElements.forEach((el, index) => {
@@ -161,16 +163,6 @@ function updateTable() {
             }
           });
         });
-        // end of click event listener
-
-        // const priceElements = document.querySelectorAll(".fees");
-        // const priceValues = [];
-
-        // priceElements.forEach((element) => {
-        //   const priceText = element.textContent.trim();
-        //   const priceValue = parseFloat(priceText.replace(/[£,]/g, ""));
-        //   console.log(priceValue);
-        // });
       },
       error: function () {
         $("#updatemessage").html("<p>An error has occurred</p>");
@@ -192,7 +184,7 @@ function gbpToEur(values) {
   const convertedValues = values.map((value) => value * exchangeRate);
   return convertedValues;
 }
-//helper method to return fees with proper symbol
+//helper method to return fees with proper symbol and comma
 function formatList(values, currency) {
   const formattedValues = values.map((value) => {
     const formattedValue = value.toLocaleString(undefined, {
