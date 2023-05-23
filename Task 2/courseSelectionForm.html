@@ -3,6 +3,8 @@
   <head>
     <title>Course Report</title>
     <link rel="stylesheet" href="layout.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="course.js"></script>
   </head>
   <body>
     <header>
@@ -23,7 +25,7 @@
               <th></th>
               <!-- Empty header for checkboxes -->
               <th>Course Title</th>
-              <th>Description</th>
+
               <th></th>
               <!-- Empty header for ellipsis -->
             </tr>
@@ -32,8 +34,12 @@
             <tr>
               <td><input type="checkbox" id="course1" /></td>
               <td>Course 1 Title</td>
-              <td>Course 1 Description (shortened)</td>
-              <td><button class="show-more">...</button></td>
+              <td>
+                <button class="show-more">...</button>
+                <!-- <span class="tooltiptext"
+                  >click for course description goes here.</span
+                > -->
+              </td>
             </tr>
             <!-- Additional rows for each course -->
           </tbody>
