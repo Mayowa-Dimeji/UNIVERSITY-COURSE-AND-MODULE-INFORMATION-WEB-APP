@@ -2,10 +2,7 @@
 session_start();
 
 // Establish database connection
-$servername = "localhost";
-$username = "your_username";
-$password = "your_password";
-$dbname = "your_database";
+
 
 try {
     $conn = new PDO("mysql:host=task2-db-1;dbname=csym019_assignment", "root", "csym019");
@@ -30,7 +27,7 @@ $password = $_POST['password'];
         exit();
     } else if (empty($username) || empty($password)&&$stmt->rowCount() != 1) {
         // Username and password do not match or multiple matching rows found
-        if($stmt->rowCount() != 1){
+        if($stmt->rowCount() == 0||$stmt->rowCount() > 1){
         $error = "Invalid credentials";
       }
     }
