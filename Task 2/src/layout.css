@@ -1,0 +1,244 @@
+.body {
+  display: grid;
+  grid-template-columns: 15% 85%;
+  /* grid-template-rows: auto; */
+  grid-template-areas:
+    "header header"
+    "nav main"
+    "footer footer";
+
+  font-family: Arial, Helvetica, sans-serif;
+}
+.loginBody {
+  display: grid;
+  grid-template-columns: 15% 85%;
+  grid-template-rows: auto;
+  grid-template-areas:
+    "header header"
+    "main main"
+    "footer footer";
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: whitesmoke;
+  min-height: 100vh;
+}
+header {
+  background-color: #555;
+  color: white;
+  padding: 10px;
+  grid-area: header;
+}
+
+nav {
+  background-color: whitesmoke;
+  color: black;
+  grid-area: nav;
+}
+
+nav > ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  border-right: 2%;
+  border-color: whitesmoke;
+  border-style: solid;
+  width: 10%;
+}
+
+nav > ul li a {
+  display: block;
+  color: #000;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+/* Change the link color on hover */
+nav > ul li a:hover {
+  background-color: #555;
+  color: whitesmoke;
+}
+
+.main {
+  background-color: whitesmoke;
+  color: black;
+  padding-left: 1em;
+  grid-area: main;
+}
+
+footer {
+  padding-top: 2em;
+  background-color: #555;
+  color: white;
+  grid-area: footer;
+  margin-top: auto;
+  text-align: center;
+}
+
+.note {
+  color: red;
+  font-size: 12pt;
+  font-family: Arial, Helvetica, sans-serif;
+  padding-top: 1em;
+}
+
+.blueNote {
+  color: blue;
+  font-size: 12pt;
+  font-family: Arial, Helvetica, sans-serif;
+  padding-top: 1em;
+  font-weight: bold;
+}
+
+/* .sketch {
+  display: flex;
+  justify-content: center;
+}
+
+.sketch img {
+  width: 60%;
+  height: auto;
+} */
+
+.addmore > input {
+  display: block;
+  float: left;
+  margin: 0 2em 2em 2em;
+  padding: 0.5em 5em;
+  text-decoration: none;
+  background-color: whitesmoke;
+  color: #555;
+}
+
+/* Change the link color on hover */
+.addmore > input:hover {
+  display: block;
+  float: left;
+  margin: 0 2em 2em 2em;
+  padding: 0.5em 5em;
+  text-decoration: none;
+  background-color: #555;
+  color: whitesmoke;
+}
+
+/* login container */
+.container {
+  width: 300px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: #f5f5f5;
+  margin-left: 500px;
+  margin-top: 50px;
+}
+
+.container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.container label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.container input[type="text"],
+.container input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.container input[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  background-color: #555;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.table-container {
+  width: 100%;
+  margin: 0 auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.tbody tr:hover {
+  background-color: #cce6ff;
+  cursor: pointer;
+  z-index: 99;
+}
+h3 {
+  text-align: center;
+}
+
+table td {
+  text-align: left;
+  padding: 8px;
+  font-size: 20px;
+}
+
+tbody tr {
+  background-color: #f2f2f2;
+}
+/* tbody tr:nth-child(odd) {
+  background-color: #ffffff;
+} */
+th {
+  text-align: center;
+  padding: 8px;
+  font-size: 18px;
+}
+.scroll {
+  margin-top: 200px;
+  overflow: auto;
+}
+
+#overlay {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  max-width: 80%;
+  max-height: 80%;
+  overflow: auto;
+}
+
+#overlay > * {
+  margin: 10px 0;
+  max-width: 100%;
+}
+
+#closeBtn {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  padding: 15px;
+  background-color: #ccc;
+  border: none;
+  cursor: pointer;
+}
+.closeBtnCase {
+  padding: 5px;
+}
+.selected {
+  top: 10px;
+  right: 10px;
+  padding: 5px;
+  border: none;
+  width: 80px;
+  background-color: #ccc;
+}
