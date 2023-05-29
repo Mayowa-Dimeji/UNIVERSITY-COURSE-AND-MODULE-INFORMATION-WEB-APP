@@ -107,7 +107,21 @@ footer {
   background-color: whitesmoke;
   color: #555;
 }
-
+.pieContainer {
+  margin: 10px;
+}
+.myClass {
+  display: flex;
+  width: 100%;
+  height: 600px;
+}
+.myClass table {
+  flex: 1;
+  height: 100px;
+}
+.myClass canvas {
+  flex: 1;
+}
 /* Change the link color on hover */
 .addmore > input:hover {
   display: block;

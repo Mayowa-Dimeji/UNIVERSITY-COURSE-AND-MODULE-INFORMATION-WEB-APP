@@ -18,52 +18,56 @@ if (!$conn) {
   die("Connection failed: " . $conn->errorInfo()[2]);
 }
 
-// Retrieve course titles from the database
-$sql = "SELECT * FROM Course";
-$result = $conn->query($sql);
+function fetchData($conn)
+{
+  // Retrieve course titles from the database
+  $sql = "SELECT * FROM Course";
+  $result = $conn->query($sql);
 
-$courses = array();
-$eIconPath = getenv('ICON_PATH');
+  $courses = array();
+  $eIconPath = getenv('ICON_PATH');
 
+  if ($result->rowCount() > 0) {
+    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+      $course = $row;
+      $course_id = $row['course_id'];
+      $course['iconPath'] = $eIconPath . '/' . $row['iconPath'];
 
-if ($result->rowCount() > 0) {
-  while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-    $course = $row;
-    $course_id = $row['course_id'];
-    $course['iconPath'] = $eIconPath . '/' . $row['iconPath'];
+      // Retrieve modules for the current course
+      $sql_modules = "SELECT * FROM Modules WHERE course_id = :course_id";
+      $stmt_modules = $conn->prepare($sql_modules);
+      $stmt_modules->bindParam(':course_id', $course_id);
+      $stmt_modules->execute();
 
-    // Retrieve modules for the current course
-    $sql_modules = "SELECT * FROM Modules WHERE course_id = :course_id";
-    $stmt_modules = $conn->prepare($sql_modules);
-    $stmt_modules->bindParam(':course_id', $course_id);
-    $stmt_modules->execute();
+      $modules = array();
+      while ($module_row = $stmt_modules->fetch(PDO::FETCH_ASSOC)) {
+        $modules[] = array(
+          'name' => $module_row['module_name'],
+          'credit' => $module_row['credits']
+        );
+      }
 
-    $modules = array();
-    while ($module_row = $stmt_modules->fetch(PDO::FETCH_ASSOC)) {
-      $modules[] = array(
-        'name' => $module_row['module_name'],
-        'credit' => $module_row['credits']
-      );
+      $course['modules'] = $modules;
+      $courses[] = $course;
     }
-
-    $course['modules'] = $modules;
-    $courses[] = $course;
   }
-  $_SESSION['courses'] = $courses;
+
+  return $courses;
 }
 
-
-
-$conn = null;
 // Check if it's an AJAX request
 if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
   // Set the appropriate response headers
   header('Content-Type: application/json');
 
-  // Echo the encoded JSON data
-  echo json_encode($courses);
+  // Fetch the data and encode it as JSON
+  $data = fetchData($conn);
+  echo json_encode($data);
   exit();
 }
+
+// Close the connection
+$conn = null;
 ?>
 
 
@@ -78,7 +82,6 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQ
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Course Report</title>
   <link rel="stylesheet" href="layout.css" />
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="course.js"></script>
@@ -153,11 +156,11 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQ
         <div class="closeBtnCase"><button id="closeBtn">Close</button></div>
       </div>
     </div>
-    <!-- <section action="./sampleCourseReport.php" class="addmore">
+    <form action="./sampleCourseReport.php" class="addmore">
 
       <input type="submit" id="createReportBtn" value="Create Course Report" />
-    </form> -->
-    <input type="submit" id="createReportBtn" value="Create Course Report" />
+    </form>
+    <!-- <input type="submit" id="createReportBtn" value="Create Course Report" /> -->
   </main>
   <footer>&copy; CSYM019 2023</footer>
 </body>

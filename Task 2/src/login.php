@@ -7,6 +7,7 @@ try {
   $conn = new PDO("mysql:host=task2-db-1;dbname=csym019_assignment", "root", "csym019");
   $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+
   // Retrieve username and password from the form submission
   $username = $_POST['username'];
   $password = $_POST['password'];

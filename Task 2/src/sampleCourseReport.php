@@ -1,11 +1,10 @@
 <?php
 session_start();
 
-if (isset($_SESSION['courses'])) {
-  $courses = $_SESSION['courses'];
+if (!isset($_SESSION['username'])) {
+  header("Location: login.php");
+  exit();
 }
-// print_r($courses[0]);
-// Now you can use $courses in this PHP file
 ?>
 
 <!DOCTYPE html>
@@ -20,6 +19,7 @@ if (isset($_SESSION['courses'])) {
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
   <script src="course.js"></script>
+  <script src="generate.js"></script>
 </head>
 
 <body class="body">
@@ -34,12 +34,12 @@ if (isset($_SESSION['courses'])) {
   </nav>
   <main>
     <h3>Sample Course Reoprt</h3>
+    <div class="chartSize" id="pieContainer"> </div>
 
-    <canvas style="width:100%" id="myChart"></canvas>
 
 
     <div class="barOne">
-
+      <canvas id="comparisonChart"></canvas>
     </div>
   </main>
   <footer>&copy; CSYM019 2023</footer>

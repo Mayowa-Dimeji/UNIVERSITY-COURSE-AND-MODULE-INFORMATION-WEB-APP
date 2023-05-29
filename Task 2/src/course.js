@@ -1,36 +1,6 @@
 //declare course variable
 let courses;
 
-//on document ready call update table function
-$(document).ready(function () {
-  updateTable();
-
-  const ctx = document.getElementById("myChart");
-  console.log("ll");
-  new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-      datasets: [
-        {
-          label: "# of Votes",
-          data: [12, 19, 3, 5, 2, 3],
-          borderWidth: 1,
-        },
-      ],
-    },
-    options: {
-      scales: {
-        y: {
-          beginAtZero: true,
-        },
-      },
-    },
-  });
-
-  console.log("plotted");
-});
-
 function updateTable() {
   setTimeout(function () {
     $.ajax({
@@ -217,6 +187,16 @@ function updateTable() {
 
           // for course report
         });
+        handleCheckboxSelection(courses);
+        // $(document).on("click", "#createReportBtn", function () {
+        //   console.log("im clickerrr");
+        //   //check for all check boxes
+        //   let selectedCourses = [];
+        //   const checkboxes = document.getElementsByClassName("course-checkbox");
+        //   console.log(checkboxes.length);
+        //   //get relevant courses to array
+        //   //parse as json data  localStorage.setItem('selectedCheckboxes', JSON.stringify(selectedCheckboxes));
+        // });
       },
       error: function () {
         $("#updatemessage").html("<p>An error has occurred</p>");
@@ -224,69 +204,41 @@ function updateTable() {
     });
   }, 1);
 }
+function handleCheckboxSelection(coursess) {
+  // Get checkboxes after the AJAX request completes
+  $(document).on("click", "#createReportBtn", function () {
+    const checkboxes = document.getElementsByClassName("course-checkbox");
+    const selectedCourses = [];
 
-//create chart
-function setPieChart(modules) {
-  console.log("in new chart");
-  const type = "pie";
+    // Iterate over the checkboxes
+    for (let i = 0; i < checkboxes.length; i++) {
+      const checkbox = checkboxes[i];
 
-  const randomColor = () => {
-    const r = Math.floor(Math.random() * 256);
-    const g = Math.floor(Math.random() * 256);
-    const b = Math.floor(Math.random() * 256);
-    return `rgba(${r}, ${g}, ${b}, 0.2)`;
-  };
+      // Check if the checkbox is checked
+      if (checkbox.checked) {
+        const index = $(checkbox).closest("tr").index();
 
-  const randomBorderColor = () => {
-    const r = Math.floor(Math.random() * 256);
-    const g = Math.floor(Math.random() * 256);
-    const b = Math.floor(Math.random() * 256);
-    return `rgba(${r}, ${g}, ${b}, 1)`;
-  };
-
-  const data = {
-    labels: modules.map((module) => module.name),
-    datasets: [
-      {
-        label: "# of Votes",
-        data: modules.map((module) => module.credit),
-        backgroundColor: modules.map(() => randomColor()),
-        borderColor: modules.map(() => randomBorderColor()),
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      y: {
-        beginAtZero: true,
-      },
-    },
-    plugins: {
-      title: {
-        display: true,
-        text: "Module Credits",
-      },
-      legend: {
-        display: false,
-      },
-    },
-  };
-  console.log("555");
-  // return new Chart(canvas, {
-  //   type: type,
-  //   data: data,
-  //   options: options,
-  // });
-  return {
-    type: type,
-    data: data,
-    options: options,
-  };
+        // Check if the index is valid and retrieve the corresponding course
+        if (index >= 0 && index < coursess.length) {
+          const course = coursess[index];
+          selectedCourses.push(course);
+        }
+      }
+    }
+    if (selectedCourses.length === 0) {
+      // Display an error message or perform any desired action
+      console.log("No courses selected.");
+      return; // Exit the function early if no courses are selected
+    }
+    // Log the selected courses
+    localStorage.setItem("chartCourses", JSON.stringify(selectedCourses));
+    console.log(selectedCourses.length);
+  });
 }
+//on document ready call update table function
+$(document).ready(function () {
+  updateTable();
+});
 
 //helper method for conversion
 function gbpToUsd(values) {
