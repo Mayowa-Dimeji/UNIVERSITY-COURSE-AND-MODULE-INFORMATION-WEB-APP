@@ -31,7 +31,7 @@ function fetchData($conn)
     while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
       $course = $row;
       $course_id = $row['course_id'];
-      $course['iconPath'] = $eIconPath . '/' . $row['iconPath'];
+      $course_icon = $row['iconPath'];
 
       // Retrieve modules for the current course
       $sql_modules = "SELECT * FROM Modules WHERE course_id = :course_id";
@@ -55,6 +55,24 @@ function fetchData($conn)
   return $courses;
 }
 
+// Check if the delete button is pressed
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  if (isset($_POST['checkedOnes'])) {
+    $deleteCourseIds = $_POST['checkedOnes'];
+
+    // Delete the selected courses from the database
+    $deleteSql = "DELETE FROM Course WHERE course_id IN (" . implode(',', $deleteCourseIds) . ")";
+    $deleteStmt = $conn->prepare($deleteSql);
+    $deleteStmt->execute();
+
+    // Optionally, delete related records from other tables
+
+    // Redirect to the same page after deletion
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+  }
+}
+
 // Check if it's an AJAX request
 if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
   // Set the appropriate response headers
@@ -69,6 +87,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQ
 // Close the connection
 $conn = null;
 ?>
+
 
 
 <!DOCTYPE html>
@@ -106,7 +125,7 @@ $conn = null;
             <th><input type="checkbox" id="checkAll" /></th>
             <!-- Empty header for checkboxes -->
             <th>Icon</th>
-            <th>Course Title</th>
+            <th>Course</th>
             <th>Level</th>
             <th></th>
             <!-- Empty header for ellipsis -->
@@ -157,8 +176,9 @@ $conn = null;
       </div>
     </div>
     <form action="./sampleCourseReport.php" class="addmore">
-
+      <!-- <input type="hidden" name=checkedOnes[] id="checkedOnesInput"> -->
       <input type="submit" id="createReportBtn" value="Create Course Report" />
+      <input type="button" name=checkedOnes[] id="checkedOnesInput" value="Delete">
     </form>
     <!-- <input type="submit" id="createReportBtn" value="Create Course Report" /> -->
   </main>

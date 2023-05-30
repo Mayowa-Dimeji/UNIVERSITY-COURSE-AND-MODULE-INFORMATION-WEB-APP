@@ -124,41 +124,30 @@ function setPieChart(modules, canvas) {
 
 function setBarChart(courses) {
   // Retrieve the canvas element
-  const ctx = document.getElementById("comparisonChart").getContext("2d");
+  const canvas = document.getElementById("comparisonChart");
+  const ctx = canvas.getContext("2d");
 
   // Prepare data for the chart
-  const moduleData = courses
-    .map((course) => {
-      return course.modules.map((module) => {
-        return {
-          course: course.name,
-          name: module.name,
-          credit: module.credit,
-        };
-      });
-    })
-    .flat();
+  const chartData = {
+    labels: [],
+    datasets: [],
+  };
 
-  const courseNames = courses.map((course) => course.name);
-  const moduleNames = moduleData.map((module) => module.name);
-  const moduleCredits = moduleData.map((module) => module.credit);
+  // Extract module data
+  courses.forEach((course) => {
+    const courseModules = course.modules.map((module) => module.credit);
+    chartData.labels.push(course.title);
+    chartData.datasets.push({
+      label: course.title,
+      data: courseModules,
+      borderWidth: 1,
+    });
+  });
 
-  // Create the chart
+  // Render the bar chart
   new Chart(ctx, {
     type: "bar",
-    data: {
-      labels: moduleNames,
-      datasets: courseNames.map((course, index) => ({
-        label: course,
-        data: moduleCredits.slice(
-          index * moduleNames.length,
-          (index + 1) * moduleNames.length
-        ),
-        backgroundColor: `rgba(${Math.random() * 255}, ${
-          Math.random() * 255
-        }, ${Math.random() * 255}, 0.6)`,
-      })),
-    },
+    data: chartData,
     options: {
       scales: {
         y: {

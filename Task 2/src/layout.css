@@ -1,3 +1,6 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
 .body {
   display: grid;
   grid-template-columns: 15% 85%;
@@ -6,8 +9,6 @@
     "header header"
     "nav main"
     "footer footer";
-
-  font-family: Arial, Helvetica, sans-serif;
 }
 .loginBody {
   display: grid;
@@ -29,7 +30,7 @@ header {
 }
 
 nav {
-  background-color: whitesmoke;
+  background-color: gainsboro;
   color: black;
   grid-area: nav;
 }
@@ -39,26 +40,26 @@ nav > ul {
   margin: 0;
   padding: 0;
   border-right: 2%;
-  border-color: whitesmoke;
-  border-style: solid;
-  width: 10%;
+  /* border-color: whitesmoke;
+  border-style: solid; */
+  /* width: 20%; */
 }
 
 nav > ul li a {
-  display: block;
+  display: inline-block;
   color: #000;
   padding: 8px 16px;
   text-decoration: none;
 }
 
 /* Change the link color on hover */
-nav > ul li a:hover {
-  background-color: #555;
-  color: whitesmoke;
+nav > ul li:hover {
+  background-color: #cce6ff;
+  color: black;
 }
 
 .main {
-  background-color: whitesmoke;
+  background-color: white;
   color: black;
   padding-left: 1em;
   grid-area: main;
@@ -72,40 +73,19 @@ footer {
   margin-top: auto;
   text-align: center;
 }
-
-.note {
-  color: red;
-  font-size: 12pt;
-  font-family: Arial, Helvetica, sans-serif;
-  padding-top: 1em;
-}
-
-.blueNote {
-  color: blue;
-  font-size: 12pt;
-  font-family: Arial, Helvetica, sans-serif;
-  padding-top: 1em;
-  font-weight: bold;
-}
-
-/* .sketch {
+.addmore {
+  margin-top: 30px;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
 }
-
-.sketch img {
-  width: 60%;
-  height: auto;
-} */
-
 .addmore > input {
-  display: block;
-  float: left;
+  flex: 1;
   margin: 0 2em 2em 2em;
   padding: 0.5em 5em;
   text-decoration: none;
   background-color: whitesmoke;
   color: #555;
+  width: 50px;
 }
 .pieContainer {
   margin: 10px;
@@ -179,8 +159,11 @@ footer {
 }
 
 table {
-  width: 100%;
   border-collapse: collapse;
+  /* border: #555; */
+}
+.firstTable {
+  width: 100%;
 }
 .tbody tr:hover {
   background-color: #cce6ff;
@@ -197,20 +180,36 @@ table td {
   font-size: 20px;
 }
 
-tbody tr {
-  background-color: #f2f2f2;
-}
+/* tbody tr {
+  background-color: whitesmoke;
+} */
 /* tbody tr:nth-child(odd) {
   background-color: #ffffff;
 } */
 th {
-  text-align: center;
-  padding: 8px;
+  text-align: left;
+  padding: 10px;
   font-size: 18px;
+  /* background-color: gainsboro; */
+}
+.firstTable th {
+  height: 25px;
+
+  background-color: #f2f2f2;
+}
+.firstTable thead:first-child {
+  /* CSS properties for the first table row */
+  border-color: rgba(220, 220, 220, 0.8);
+  border-style: outset;
+  border-width: 1px;
 }
 .scroll {
   margin-top: 200px;
   overflow: auto;
+}
+.tableIcon {
+  width: 40px;
+  height: 40px;
 }
 
 #overlay {
@@ -255,4 +254,33 @@ th {
   border: none;
   width: 80px;
   background-color: #ccc;
+}
+.form-container {
+  display: flex;
+  justify-content: left;
+  align-items: left;
+}
+.inner-form {
+  display: grid;
+  gap: 1.5rem;
+}
+label {
+  font-weight: bold;
+}
+.inner-form input[type="text"],
+textarea,
+select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.inner-form input[type="submit"] {
+  display: block;
+  float: left;
+  margin: 0 2em 2em 2em;
+  padding: 0.5em 5em;
+  text-decoration: none;
+  background-color: whitesmoke;
+  color: #555;
 }

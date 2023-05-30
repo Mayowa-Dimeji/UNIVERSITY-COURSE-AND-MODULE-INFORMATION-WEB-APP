@@ -1,6 +1,28 @@
 //declare course variable
 let courses;
 
+//on document ready call update table function
+$(document).ready(function () {
+  updateTable();
+
+  //to check checkboxes our table rows on click
+  $(".firstTable").on("click", "tr", function () {
+    // Find the checkbox within the clicked row
+    var checkbox = $(this).find('input[type="checkbox"]');
+
+    // Toggle the checkbox's checked state
+    checkbox.prop("checked", !checkbox.prop("checked"));
+  });
+
+  /// for delete button
+  $(".deleteButton").on("click", "tr", function () {
+    // Find the checkbox within the clicked row
+    document.getElementById("checkedOnesInput").value = JSON.parse(
+      localStorage.getItem("chartCourses")
+    );
+  });
+});
+
 function updateTable() {
   setTimeout(function () {
     $.ajax({
@@ -17,23 +39,27 @@ function updateTable() {
           var courseId = course.course_id;
           // console.log(courseId);
           var iconPath = course.iconPath;
+          console.log(iconPath);
           var title = course.title;
           var level = course.level;
+          console.log("iconPath value:", iconPath);
 
           // <img src="${iconPath}" alt="icon" />
 
           // Generate the HTML for each row
           var rowHtml = `
-                    <tr>
-                      <td><input type="checkbox" class="course-checkbox" id="course${courseId}" /></td>
-                      <td><span>i</span></td>
-                      <td>${title}</td>
-                      <td>${level}</td>
-                      <td>
-                        <button class="show-more">...</button>
-                      </td>
-                    </tr>
-                  `;
+          <tr>
+            <td><input type="checkbox" class="course-checkbox" id="course${courseId}" /></td>
+            <td><img src="${iconPath}" alt="icon" class="tableIcon" /></td>
+            <td>${title}</td>
+            <td>${level}</td>
+            <td>
+              <button class="show-more">info</button>
+            </td>
+          </tr>
+        `;
+
+          console.log("iconPath value:", iconPath);
 
           // Append the row HTML to the table body
           $("#tbody").append(rowHtml);
@@ -53,6 +79,10 @@ function updateTable() {
             var overviewO =
               "<h3>Overview</h3>" + "<p>" + courses[index].overview + "</p>";
             document.getElementById("overviewOverlay").innerHTML = overviewO; //overview
+
+            var iconO =
+              "<img alt='icon' src='" + courses[index].iconPath + "' />"; //  icon
+            document.getElementById("iconOverlay").innerHTML = iconO;
 
             var highlightsO =
               "<h3>Highlights</h3>" +
@@ -111,8 +141,9 @@ function updateTable() {
               var columnName = columnNames[i];
 
               if (
-                courses[index].hasOwnProperty(columnName) &&
-                courses[index][columnName] !== "NULL"
+                (courses[index].hasOwnProperty(columnName) &&
+                  courses[index][columnName] !== "NULL") ||
+                courses[index][columnName] === null
               ) {
                 nonNullColumns.push(columnName);
               }
@@ -204,6 +235,8 @@ function updateTable() {
     });
   }, 1);
 }
+
+//to save selected checked courses
 function handleCheckboxSelection(coursess) {
   // Get checkboxes after the AJAX request completes
   $(document).on("click", "#createReportBtn", function () {
@@ -235,10 +268,6 @@ function handleCheckboxSelection(coursess) {
     console.log(selectedCourses.length);
   });
 }
-//on document ready call update table function
-$(document).ready(function () {
-  updateTable();
-});
 
 //helper method for conversion
 function gbpToUsd(values) {
