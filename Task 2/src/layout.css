@@ -87,6 +87,10 @@ footer {
   color: #555;
   width: 50px;
 }
+.infoIcon {
+  width: 20px;
+  height: 20px;
+}
 .pieContainer {
   margin: 10px;
 }

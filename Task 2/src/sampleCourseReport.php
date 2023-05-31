@@ -1,4 +1,5 @@
 <?php
+//verify login connection for security
 session_start();
 
 if (!isset($_SESSION['username'])) {

@@ -1,8 +1,9 @@
 $(document).ready(function () {
   //   console.log(courses);
-  const selectedCheckboxes = JSON.parse(localStorage.getItem("chartCourses"));
-  console.log(selectedCheckboxes.length);
+  const selectedCheckboxes = JSON.parse(localStorage.getItem("chartCourses")); //get check courses stored in course.js
+  // console.log(selectedCheckboxes.length);
   if (selectedCheckboxes.length == 1) {
+    //plot one pie chart if its one item and append table
     const course = selectedCheckboxes[0];
     //table information
     var myTable = document.createElement("table");
@@ -32,10 +33,11 @@ $(document).ready(function () {
 
     setPieChart(course.modules, document.getElementById("pie1"));
   } else if (selectedCheckboxes.length > 1) {
+    //if more than one course
     for (var i = 0; i < selectedCheckboxes.length; i++) {
       const course = selectedCheckboxes[i];
 
-      // Create table for course
+      // Create table for each course
       var myTable = document.createElement("table");
       var tableHTML = `<thead>
                             <tr>
@@ -52,14 +54,14 @@ $(document).ready(function () {
 
       myTable.innerHTML = tableHTML;
 
-      // Create canvas element for chart
+      // Create canvas element for eacch course chart
       var myCanvas = document.createElement("canvas");
       myCanvas.id = "pie" + (i + 1);
 
-      // Create container div and append table and canvas
+      // get container div and append table and canvas
       var container = document.getElementById("pieContainer");
       var oneDiv = document.createElement("div");
-      oneDiv.classList.add("myClass");
+      oneDiv.classList.add("myClass"); //for css styling
       oneDiv.appendChild(myTable);
       oneDiv.appendChild(myCanvas);
       container.appendChild(oneDiv);
@@ -67,15 +69,11 @@ $(document).ready(function () {
       // Generate chart for course
       setPieChart(course.modules, myCanvas);
     }
-    setBarChart(selectedCheckboxes);
+    setBarChart(selectedCheckboxes); //set up bar chart
   }
 });
-//get all checkboxes on that page
-//ajax courses
-//get array of courses based on checkbox id
-//dynamically add chart
-//randomizes canvas id
-//create chart
+
+//create pie chart
 function setPieChart(modules, canvas) {
   console.log("in new chart");
   const type = "pie";
@@ -98,7 +96,7 @@ function setPieChart(modules, canvas) {
     labels: modules.map((module) => module.name),
     datasets: [
       {
-        label: "# of Votes",
+        label: "Credits",
         data: modules.map((module) => module.credit),
         backgroundColor: modules.map(() => randomColor()),
         borderColor: modules.map(() => randomBorderColor()),
@@ -122,6 +120,7 @@ function setPieChart(modules, canvas) {
   });
 }
 
+//bar chart setup
 function setBarChart(courses) {
   // Retrieve the canvas element
   const canvas = document.getElementById("comparisonChart");
@@ -144,7 +143,7 @@ function setBarChart(courses) {
     });
   });
 
-  // Render the bar chart
+  // create bar chart
   new Chart(ctx, {
     type: "bar",
     data: chartData,

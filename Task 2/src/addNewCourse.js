@@ -1,6 +1,6 @@
 const selectedOptions = new Set();
 $(document).ready(function () {
-  // Add Module button functionality
+  // Add Module button functionality for more than one module
   $("#addModuleButton").click(function () {
     const moduleInput = `
             <div class="module-input">
@@ -28,7 +28,7 @@ $(document).ready(function () {
     $("#feesContainer").append(feeInput);
   });
 
-  //disab select options
+  //disable select options clicked already
   const selectElement = document.getElementById("mySelect");
 
   selectElement.addEventListener("change", function () {
@@ -45,22 +45,3 @@ $(document).ready(function () {
     }
   });
 });
-function disableSelectedOptions() {
-  const selectedOption = this.value;
-
-  if (selectedOption !== "") {
-    selectedOptions.add(selectedOption);
-
-    const selectElements = document.getElementsByTagName("select");
-
-    for (let i = 0; i < selectElements.length; i++) {
-      const options = selectElements[i].getElementsByTagName("option");
-
-      for (let j = 0; j < options.length; j++) {
-        if (options[j].value === selectedOption) {
-          options[j].disabled = true;
-        }
-      }
-    }
-  }
-}

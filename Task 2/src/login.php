@@ -4,7 +4,7 @@ session_start();
 // Establish database connection
 
 try {
-  $conn = new PDO("mysql:host=task2-db-1;dbname=csym019_assignment", "root", "csym019");
+  $conn = new PDO("mysql:host=task2-db-1;dbname=csym019_database", "root", "csym019");
   $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 
@@ -16,7 +16,7 @@ try {
     // Empty username or password
 
   } else {
-    // Prepare the query to check if the username and password match
+    // Prepare the query to check if the username and password is in database
     $query = "SELECT * FROM User WHERE username = :username AND password = :password";
     $stmt = $conn->prepare($query);
     $stmt->bindParam(':username', $username);
@@ -24,8 +24,9 @@ try {
     $stmt->execute();
 
     if ($stmt->rowCount() == 1) {
-      // Username and password match, user is authenticated
+      //check username and password match, user is authenticated
       $_SESSION['username'] = $username;
+      $_SESSION['password'] = $password;
       header("Location: courseSelectionForm.php");
       exit();
     } else {
@@ -34,8 +35,8 @@ try {
     }
   }
 } catch (PDOException $e) {
-  echo "Connection failed: " . $e->getMessage();
-  // Handle connection error appropriately
+  echo "Connection failed: " . $e->getMessage(); // catch error 
+
 }
 
 ?>

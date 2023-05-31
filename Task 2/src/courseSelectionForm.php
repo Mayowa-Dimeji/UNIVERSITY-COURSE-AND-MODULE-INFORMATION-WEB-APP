@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 session_start();
 
 if (!isset($_SESSION['username'])) {
@@ -6,13 +8,13 @@ if (!isset($_SESSION['username'])) {
   exit();
 }
 
-// Assuming you have a database connection established
+// store database info in variables
 $servername = "task2-db-1";
 $username = "root";
 $password = "csym019";
-$dbname = "csym019_assignment";
+$dbname = "csym019_database";
 
-$conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+$conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password); //database object
 
 if (!$conn) {
   die("Connection failed: " . $conn->errorInfo()[2]);
@@ -20,62 +22,46 @@ if (!$conn) {
 
 function fetchData($conn)
 {
-  // Retrieve course titles from the database
+  // Retrieve all courses from the database
   $sql = "SELECT * FROM Course";
   $result = $conn->query($sql);
 
-  $courses = array();
-  $eIconPath = getenv('ICON_PATH');
+  $courses = array(); //declare variable
+
 
   if ($result->rowCount() > 0) {
     while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
       $course = $row;
       $course_id = $row['course_id'];
-      $course_icon = $row['iconPath'];
 
-      // Retrieve modules for the current course
+
+      // Retrieve modules for the current course with course id
       $sql_modules = "SELECT * FROM Modules WHERE course_id = :course_id";
       $stmt_modules = $conn->prepare($sql_modules);
       $stmt_modules->bindParam(':course_id', $course_id);
       $stmt_modules->execute();
 
-      $modules = array();
+      $modules = array(); //modules variable
       while ($module_row = $stmt_modules->fetch(PDO::FETCH_ASSOC)) {
         $modules[] = array(
           'name' => $module_row['module_name'],
-          'credit' => $module_row['credits']
+          'credit' => $module_row['credits']  //add modules object to an array
         );
       }
 
-      $course['modules'] = $modules;
-      $courses[] = $course;
+      $course['modules'] = $modules; //make modules  an object of the course
+      $courses[] = $course; //add course to array
     }
   }
 
   return $courses;
 }
 
-// Check if the delete button is pressed
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  if (isset($_POST['checkedOnes'])) {
-    $deleteCourseIds = $_POST['checkedOnes'];
 
-    // Delete the selected courses from the database
-    $deleteSql = "DELETE FROM Course WHERE course_id IN (" . implode(',', $deleteCourseIds) . ")";
-    $deleteStmt = $conn->prepare($deleteSql);
-    $deleteStmt->execute();
-
-    // Optionally, delete related records from other tables
-
-    // Redirect to the same page after deletion
-    header("Location: " . $_SERVER['PHP_SELF']);
-    exit();
-  }
-}
 
 // Check if it's an AJAX request
 if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-  // Set the appropriate response headers
+  // Set the response header
   header('Content-Type: application/json');
 
   // Fetch the data and encode it as JSON
@@ -175,10 +161,10 @@ $conn = null;
         <div class="closeBtnCase"><button id="closeBtn">Close</button></div>
       </div>
     </div>
-    <form action="./sampleCourseReport.php" class="addmore">
-      <!-- <input type="hidden" name=checkedOnes[] id="checkedOnesInput"> -->
+    <form action="./sampleCourseReport.php" class="addmore" method="post">
+      <input type="hidden" name="checkedOnes[]" id="checkedOnesInput" value="">
       <input type="submit" id="createReportBtn" value="Create Course Report" />
-      <input type="button" name=checkedOnes[] id="checkedOnesInput" value="Delete">
+      <input type="button" id="deleteBtn" value="Delete">
     </form>
     <!-- <input type="submit" id="createReportBtn" value="Create Course Report" /> -->
   </main>

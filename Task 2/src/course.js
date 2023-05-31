@@ -1,28 +1,57 @@
-//declare course variable
+//declare courses variable
 let courses;
 
 //on document ready call update table function
 $(document).ready(function () {
   updateTable();
+  makeTrClickable();
+  deleteAjaxInfo();
+});
 
-  //to check checkboxes our table rows on click
-  $(".firstTable").on("click", "tr", function () {
+//to send post request to delete courseids
+function deleteAjaxInfo(callback) {
+  $("#deleteBtn").on("click", function () {
+    let selectedCourses = handleCheckboxSelection(
+      courses,
+      function (selectedCourses) {
+        console.log(selectedCourses);
+
+        var deleteCourseIds = selectedCourses.map(function (course) {
+          return course.course_id; //get ids of checked courses
+        });
+
+        // Send the selected course IDs to the server using AJAX
+        $.ajax({
+          url: "deleteCourse.php",
+          method: "POST",
+          data: { checkedOnes: deleteCourseIds },
+          success: function (response) {},
+          error: function (xhr, status, error) {
+            // Handle any errors that occur during the AJAX request
+            console.log("AJAX request failed: " + error);
+          },
+        });
+      }
+    );
+
+    if (typeof callback === "function") {
+      callback(selectedCourses);
+    }
+  });
+}
+
+//to make table rows check check boxes for usability
+function makeTrClickable() {
+  $(".firstTable").on("click", "tbody tr", function () {
     // Find the checkbox within the clicked row
     var checkbox = $(this).find('input[type="checkbox"]');
 
     // Toggle the checkbox's checked state
     checkbox.prop("checked", !checkbox.prop("checked"));
   });
+}
 
-  /// for delete button
-  $(".deleteButton").on("click", "tr", function () {
-    // Find the checkbox within the clicked row
-    document.getElementById("checkedOnesInput").value = JSON.parse(
-      localStorage.getItem("chartCourses")
-    );
-  });
-});
-
+// populate selection table from response echoed from course selection .php
 function updateTable() {
   setTimeout(function () {
     $.ajax({
@@ -32,7 +61,6 @@ function updateTable() {
       success: function (response) {
         courses = response; // store course data response
         $("#tbody").empty();
-        // console.log("hi");
 
         // Iterate over the courses array and display on html table
         $.each(courses, function (index, course) {
@@ -44,8 +72,6 @@ function updateTable() {
           var level = course.level;
           console.log("iconPath value:", iconPath);
 
-          // <img src="${iconPath}" alt="icon" />
-
           // Generate the HTML for each row
           var rowHtml = `
           <tr>
@@ -54,7 +80,7 @@ function updateTable() {
             <td>${title}</td>
             <td>${level}</td>
             <td>
-              <button class="show-more">info</button>
+              <button class="show-more"><img class="infoIcon" src="infoIcon.png" alt="info Icon"/></button>
             </td>
           </tr>
         `;
@@ -71,7 +97,7 @@ function updateTable() {
             const gbpList = []; // for collecting array of fees
             console.log(index);
 
-            //format HTML display of information then set to inener html
+            //format HTML display of information then set to inner html for overlay info
 
             var courseTitle = "<h2>" + courses[index].title + "</h2>"; //title
             document.getElementById("titleOverlay").innerHTML = courseTitle;
@@ -219,15 +245,7 @@ function updateTable() {
           // for course report
         });
         handleCheckboxSelection(courses);
-        // $(document).on("click", "#createReportBtn", function () {
-        //   console.log("im clickerrr");
-        //   //check for all check boxes
-        //   let selectedCourses = [];
-        //   const checkboxes = document.getElementsByClassName("course-checkbox");
-        //   console.log(checkboxes.length);
-        //   //get relevant courses to array
-        //   //parse as json data  localStorage.setItem('selectedCheckboxes', JSON.stringify(selectedCheckboxes));
-        // });
+        // deleteAjaxInfo(selectedCourses);
       },
       error: function () {
         $("#updatemessage").html("<p>An error has occurred</p>");
@@ -239,10 +257,10 @@ function updateTable() {
 //to save selected checked courses
 function handleCheckboxSelection(coursess) {
   // Get checkboxes after the AJAX request completes
+
   $(document).on("click", "#createReportBtn", function () {
     const checkboxes = document.getElementsByClassName("course-checkbox");
     const selectedCourses = [];
-
     // Iterate over the checkboxes
     for (let i = 0; i < checkboxes.length; i++) {
       const checkbox = checkboxes[i];
@@ -259,14 +277,15 @@ function handleCheckboxSelection(coursess) {
       }
     }
     if (selectedCourses.length === 0) {
-      // Display an error message or perform any desired action
       console.log("No courses selected.");
       return; // Exit the function early if no courses are selected
     }
     // Log the selected courses
     localStorage.setItem("chartCourses", JSON.stringify(selectedCourses));
     console.log(selectedCourses.length);
+    callback(selectedCourses);
   });
+  // return selectedCourses;
 }
 
 //helper method for conversion
