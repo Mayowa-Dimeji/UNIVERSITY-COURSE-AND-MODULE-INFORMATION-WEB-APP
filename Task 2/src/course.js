@@ -1,42 +1,45 @@
 //declare courses variable
 let courses;
 
-//on document ready call update table function
-$(document).ready(function () {
-  updateTable();
-  makeTrClickable();
-  deleteAjaxInfo();
-});
-
 //to send post request to delete courseids
-function deleteAjaxInfo(callback) {
+function deleteAjaxInfo(coursess) {
   $("#deleteBtn").on("click", function () {
-    let selectedCourses = handleCheckboxSelection(
-      courses,
-      function (selectedCourses) {
-        console.log(selectedCourses);
+    const checkboxes = document.getElementsByClassName("course-checkbox");
+    const selectedCourses = [];
+    // Iterate over the checkboxes
+    for (let i = 0; i < checkboxes.length; i++) {
+      const checkbox = checkboxes[i];
 
-        var deleteCourseIds = selectedCourses.map(function (course) {
-          return course.course_id; //get ids of checked courses
-        });
+      // Check if the checkbox is checked
+      if (checkbox.checked) {
+        const index = $(checkbox).closest("tr").index();
 
-        // Send the selected course IDs to the server using AJAX
-        $.ajax({
-          url: "deleteCourse.php",
-          method: "POST",
-          data: { checkedOnes: deleteCourseIds },
-          success: function (response) {},
-          error: function (xhr, status, error) {
-            // Handle any errors that occur during the AJAX request
-            console.log("AJAX request failed: " + error);
-          },
-        });
+        // Check if the index is valid and retrieve the corresponding course
+        if (index >= 0 && index < coursess.length) {
+          const course = coursess[index];
+          selectedCourses.push(course);
+        }
       }
-    );
-
-    if (typeof callback === "function") {
-      callback(selectedCourses);
     }
+    if (selectedCourses.length === 0) {
+      console.log("No courses selected.");
+      return; // Exit the function early if no courses are selected
+    }
+    var deleteCourseIds = selectedCourses.map(function (course) {
+      return course.course_id; //get ids of checked courses
+    });
+    $.ajax({
+      url: "deleteCourse.php",
+      method: "POST",
+      data: { checkedOnes: deleteCourseIds },
+      success: function (response) {
+        // Handle the success response if needed
+      },
+      error: function (xhr, status, error) {
+        // Handle any errors that occur during the AJAX request
+        console.log("AJAX request failed: " + error);
+      },
+    });
   });
 }
 
@@ -245,7 +248,7 @@ function updateTable() {
           // for course report
         });
         handleCheckboxSelection(courses);
-        // deleteAjaxInfo(selectedCourses);
+        deleteAjaxInfo(courses);
       },
       error: function () {
         $("#updatemessage").html("<p>An error has occurred</p>");
@@ -253,8 +256,14 @@ function updateTable() {
     });
   }, 1);
 }
+//on document ready call update table function
+$(document).ready(function () {
+  updateTable();
 
-//to save selected checked courses
+  makeTrClickable();
+});
+
+//to save selected checked courses for storing check courses generating report
 function handleCheckboxSelection(coursess) {
   // Get checkboxes after the AJAX request completes
 
@@ -283,9 +292,8 @@ function handleCheckboxSelection(coursess) {
     // Log the selected courses
     localStorage.setItem("chartCourses", JSON.stringify(selectedCourses));
     console.log(selectedCourses.length);
-    callback(selectedCourses);
+    // selectedCourses;
   });
-  // return selectedCourses;
 }
 
 //helper method for conversion

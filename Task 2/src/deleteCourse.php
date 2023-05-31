@@ -24,17 +24,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $deleteCourseIds = $_POST['checkedOnes'];
 
         foreach ($deleteCourseIds as $courseId) {
-            // Delete course from the database
-            $sql_delete_course = "DELETE FROM Course WHERE course_id = :course_id";
-            $stmt_delete_course = $conn->prepare($sql_delete_course);
-            $stmt_delete_course->bindParam(':course_id', $courseId);
-            $stmt_delete_course->execute();
-
             // Delete modules related to the course
             $sql_delete_modules = "DELETE FROM Modules WHERE course_id = :course_id";
             $stmt_delete_modules = $conn->prepare($sql_delete_modules);
             $stmt_delete_modules->bindParam(':course_id', $courseId);
             $stmt_delete_modules->execute();
+
+            // Delete course from the database
+            $sql_delete_course = "DELETE FROM Course WHERE course_id = :course_id";
+            $stmt_delete_course = $conn->prepare($sql_delete_course);
+            $stmt_delete_course->bindParam(':course_id', $courseId);
+            $stmt_delete_course->execute();
         }
 
         // Redirect back to the previous page
