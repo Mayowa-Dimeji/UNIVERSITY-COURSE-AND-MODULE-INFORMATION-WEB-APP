@@ -9,9 +9,7 @@ services:
       - 80:80
     volumes:
       - ./src:/var/www/html/
-      - ./icons:/var/www/html/icons:ro
-    environment:
-      - ICON_PATH=/var/www/html/icons 
+      
 
   db:
     image: mysql
